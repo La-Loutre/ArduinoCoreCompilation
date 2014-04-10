@@ -1,0 +1,37 @@
+NOMPROJET=projetTest
+
+CXX=avr-g++ #Compilateur pour micro controleur
+CC=avr-gcc
+MCU=-mmcu=atmega328p #Nom de la board pour le compilateur (pour qu'il connaisse l'architecture du microcontroleur
+LIBAVR=/usr/lib/avr/lib
+LIBCAVR=
+
+
+CPU_SPEED=-DF_CPU=16000000UL
+CFLAGS=-c -g -Os -Wall -fno-exceptions -ffunction-sections -fdata-sections -mmcu=atmega328p -DF_CPU=16000000L -MMD -DUSB_VID=null -DUSB_PID=null -DARDUINO=101
+
+PORT=/dev/ttyACM0 #Port usb
+LIBDIR=../../lib #La ou se trouve la librairie a linker
+LDFLAGS=-lArduinoModif #link pour l'édition de lien
+INCDIR=../../include # .h 
+BINDIR=../../bin #
+all: build upload
+
+build: $(NOMPROJET).hex
+
+$(NOMPROJET).hex:$(NOMPROJET).eep
+	avr-objcopy -O ihex -R .eeprom  $(NOMPROJET).elf $(NOMPROJET).hex 
+$(NOMPROJET).eep: $(NOMPROJET).elf
+	avr-objcopy -O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0 $(NOMPROJET).elf $(NOMPROJET).eep
+
+$(NOMPROJET).elf:$(NOMPROJET).o
+	$(CC) -Os -Wl,--gc-sections -mmcu=atmega328p -o $(NOMPROJET).elf $(NOMPROJET).o ../../lib/libArduinoModif.a -L$(LIBDIR) -lm
+$(NOMPROJET).o: $(NOMPROJET).c
+	$(CXX)  $(CFLAGS) -I$(INCDIR) $(NOMPROJET).c 
+
+upload:
+	avrdude -V -F -p m328p -c arduino -b 115200 -Uflash:w:$(NOMPROJET).hex -P$(PORT)
+
+clean:
+	rm -f $(NOMPROJET).hex $(NOMPROJET).elf
+	rm *.o 
