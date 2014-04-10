@@ -1,4 +1,3 @@
-main.o: main.cpp ../include/Arduino.h ../include/binary.h \
- ../include/WCharacter.h ../include/WString.h ../include/HardwareSerial.h \
- ../include/Stream.h ../include/Print.h ../include/Printable.h \
- ../include/new.h ../include/pins_arduino.h
+main.o: main.cpp Arduino.h binary.h WCharacter.h WString.h \
+ HardwareSerial.h Stream.h Print.h Printable.h ../include/new.h \
+ pins_arduino.h

@@ -17,7 +17,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include <Arduino.h>
+#include "Arduino.h"
 
 int main(void)
 {
@@ -26,13 +26,14 @@ int main(void)
 #if defined(USBCON)
 	USBDevice.attach();
 #endif
-	
+	/*
 	setup();
     
 	for (;;) {
 		loop();
 		if (serialEventRun) serialEventRun();
-	}
+		}*/
+	mainArduino();
         
 	return 0;
 }
